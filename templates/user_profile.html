@@ -1,34 +1,20 @@
 {% extends 'base.html' %}
 
-{% block title %}Home{% endblock %}
+{% block title %}{{ user_profile.username }}'s Profile{% endblock %}
 
 {% block content %}
 <div class="container">
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <form method="get" action="{% url 'home' %}" class="form-inline">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q" value="{{ query }}">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
-        </div>
-    </div>
+    <h2>{{ user_profile.username }}'s Profile</h2>
     <div class="row">
         <div class="col-md-12">
-            {% csrf_token %}
             {% for image in images %}
             <div class="card mb-4">
+                <a href="{% url 'meme' image.pk %}">
+                    <img src="{{ image.image.url }}" class="card-img-top" alt="{{ image.title }}">
+                </a>
                 <div class="card-body">
-                    <h3 class="card-title">{{ image.title }}</h3> <!-- Zmieniony rozmiar czcionki -->
-                    <a href="{% url 'meme' image.pk %}">
-                        <img src="{{ image.image.url }}" class="card-img-top img-fluid" alt="{{ image.title }}">
-                    </a>
-                    <p class="card-text">Uploaded by
-                        <a href="{% url 'user_profile' image.user.username %}">{{ image.user.username }}</a>
-                    </p>
+                    <h5 class="card-title">{{ image.title }}</h5>
                     <p class="card-text">{{ image.comments.count }} Comments</p>
-                    <button class="btn like-button {% if user in image.likes.all %}btn-success{% else %}btn-danger{% endif %}" data-image-id="{{ image.pk }}">
-                        {{ image.likes.count }}
-                    </button>
                 </div>
             </div>
             {% endfor %}
@@ -66,9 +52,4 @@
     </div>
     {% endif %}
 </div>
-{% endblock %}
-
-{% block extra_head %}
-{% load static %}
-<script src="{% static 'scripts/like.js' %}"></script>
 {% endblock %}
